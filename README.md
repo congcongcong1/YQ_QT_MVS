@@ -138,7 +138,7 @@ QString m_frameInfo;  ///< 当前帧的描述信息
 /**
  * @file FileName.cpp
  * @brief 本文件主要完成……功能
- * @author 罗子聪
+ * @author 郑萌
  * @date 2025-11-25
  *
  * @details 文件中包含：
