@@ -1,0 +1,35 @@
+# C++ compiled files
+*.o
+*.obj
+*.so
+*.a
+*.lo
+*.la
+*.exe
+
+# Qt compiled files
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.qm
+moc_predefs.h
+
+# Build artifacts
+Makefile
+.qmake.stash
+BasicDemoLineScan
+
+# Qt Creator user files
+*.pro.user
+*.pro.user.*
+
+# IDE directories
+.trae/
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+*~
