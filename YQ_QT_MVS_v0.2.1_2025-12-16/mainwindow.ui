@@ -1,0 +1,1525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1815</width>
+    <height>890</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,2,3">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <item>
+       <widget class="QComboBox" name="EnumCombo"/>
+      </item>
+      <item>
+       <widget class="QGraphicsView" name="DisplayWidget"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,3,2,0">
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>相机控制区</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="OpenButton">
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>打开设备</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="CloseButton">
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>关闭设备</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="EnumButton">
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>查找设备</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="maximumSize">
+         <size>
+          <width>12000000</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>图像采集 </string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="2" colspan="2">
+          <widget class="QComboBox" name="SelchangeTriggerselCombo"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>触发源</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>触发开关</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>触发选项</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="StartGrabbingButton">
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>开始采集</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="StopGrabbingButton">
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>停止采集</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="SoftwareOnceButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>执行一次触发</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2" colspan="2">
+          <widget class="QComboBox" name="SelchangeTriggersourceCombo"/>
+         </item>
+         <item row="2" column="2" colspan="2">
+          <widget class="QComboBox" name="SelchangeTriggerswitchCombo"/>
+         </item>
+        </layout>
+        <zorder>SelchangeTriggerselCombo</zorder>
+        <zorder>StopGrabbingButton</zorder>
+        <zorder>label</zorder>
+        <zorder>label_2</zorder>
+        <zorder>label_3</zorder>
+        <zorder>SelchangeTriggerswitchCombo</zorder>
+        <zorder>SelchangeTriggersourceCombo</zorder>
+        <zorder>StartGrabbingButton</zorder>
+        <zorder>SoftwareOnceButton</zorder>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>图片保存</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="SaveBmpButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>保存BMP</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="SaveJpgButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>保存JPG</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="SaveTiffButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>保存tiff</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="SavePngButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>保存png</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="title">
+         <string>参数</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_4" columnminimumwidth="10,1">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>像素格式</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="SelchangePixelformatCombo"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>HB模式</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="SelchangeImageCompressionModeCombo"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>曝光</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="ExposureTimeLineEdit"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>模拟增益</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QComboBox" name="SelchangePreampgainCombo"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>数字增益</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="PreampGainLineEdit"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>行频设定值
+</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="AcquisitionLineRateLineEdit"/>
+           </item>
+           <item row="6" column="0" colspan="2">
+            <widget class="QCheckBox" name="AcquisitionLineRateEnableCheckBox">
+             <property name="text">
+              <string>行频使能开关</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>实际行频</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QLineEdit" name="ResultingLineRateLineEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="GetParameterButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>参数获取</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="SetParameterButton">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>参数设置</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QGroupBox" name="groupbox_5">
+        <property name="title">
+         <string>识别及标定区</string>
+        </property>
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>150</y>
+           <width>531</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QPushButton" name="bnFindCircle">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>找圆心</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="bnClearOverlay">
+          <property name="geometry">
+           <rect>
+            <x>400</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>清空</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_6">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>50</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C1:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>50</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_14">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>80</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R1:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>90</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_19">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>50</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C2：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_20">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>80</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R2：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_2">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>50</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_2">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>90</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_23">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>50</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C3：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_24">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>80</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R3：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_3">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>50</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_3">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>90</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_25">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>120</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C5：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_4">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>160</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_26">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>120</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C3:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_27">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>150</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R3:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_28">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>150</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R5：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_5">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>160</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_4">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>120</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_5">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>120</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_6">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>160</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_29">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>120</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C4：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_30">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>150</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R4：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_6">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>120</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_31">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>190</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C8：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_7">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>230</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_32">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>190</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C6:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_33">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>220</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R6:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_34">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>220</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R8：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_8">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>230</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_7">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>190</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_8">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>190</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleRadius_9">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>230</y>
+            <width>120</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>radius</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_35">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>190</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>C7：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_36">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>220</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>R7：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCircleCenter_9">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>190</y>
+            <width>140</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Circlecenter</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>541</width>
+           <height>131</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QPushButton" name="bnFindBox">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>找盒子四点</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_15">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>左上</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelBoxP1">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>50</y>
+            <width>180</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>P1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_18">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>50</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>右上</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_16">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>左下</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelBoxP3">
+          <property name="geometry">
+           <rect>
+            <x>330</x>
+            <y>90</y>
+            <width>180</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>P3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_17">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>90</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>右下</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelBoxP4">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>90</y>
+            <width>180</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>P4</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelBoxP2">
+          <property name="geometry">
+           <rect>
+            <x>330</x>
+            <y>50</y>
+            <width>180</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>P2</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>410</y>
+           <width>531</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QPushButton" name="bnRectify">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>畸变矫正</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="btnOpenImage">
+          <property name="geometry">
+           <rect>
+            <x>400</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>打开图片</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>460</y>
+           <width>531</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QPushButton" name="bnStartCalib9">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>开始九点标定</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="bnStartCalculate">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>开始计算转换矩阵</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="bnSaveCalib9">
+          <property name="geometry">
+           <rect>
+            <x>400</x>
+            <y>10</y>
+            <width>130</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>保存标定结果</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP1">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>50</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP2">
+          <property name="geometry">
+           <rect>
+            <x>190</x>
+            <y>50</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>P2</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP3">
+          <property name="geometry">
+           <rect>
+            <x>380</x>
+            <y>50</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP4">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>80</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p4</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP5">
+          <property name="geometry">
+           <rect>
+            <x>190</x>
+            <y>80</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p5</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP6">
+          <property name="geometry">
+           <rect>
+            <x>380</x>
+            <y>80</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p6</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP7">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>110</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p7</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP8">
+          <property name="geometry">
+           <rect>
+            <x>190</x>
+            <y>110</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p8</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCalibP9">
+          <property name="geometry">
+           <rect>
+            <x>380</x>
+            <y>110</y>
+            <width>150</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>p9</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_9">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>600</y>
+           <width>531</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QLabel" name="label_21">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>30</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>FPS:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelFps">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>10</y>
+            <width>70</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_22">
+          <property name="geometry">
+           <rect>
+            <x>370</x>
+            <y>10</y>
+            <width>80</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>MeanGray：</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMeanGray">
+          <property name="geometry">
+           <rect>
+            <x>460</x>
+            <y>10</y>
+            <width>70</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_10">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>650</y>
+           <width>531</width>
+           <height>80</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <widget class="QLabel" name="label_4">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>70</width>
+            <height>60</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>鼠标坐标:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelCoord">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>10</y>
+            <width>180</width>
+            <height>60</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Coord</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_5">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>10</y>
+            <width>70</width>
+            <height>60</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>  灰度:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelGray">
+          <property name="geometry">
+           <rect>
+            <x>350</x>
+            <y>10</y>
+            <width>180</width>
+            <height>60</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="text">
+           <string>Gray</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QPushButton" name="bnDynamicMeasure">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>730</y>
+           <width>130</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>动态测量</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_38">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>760</y>
+           <width>30</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>长：</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_37">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>760</y>
+           <width>30</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>宽：</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labellength">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>760</y>
+           <width>160</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelwidth">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>760</y>
+           <width>160</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
