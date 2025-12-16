@@ -1,0 +1,6 @@
+# Homography Matrix H (Image to World) - 3x3
+# Format: Row-major, separated by ' '
+# Generated on: 2025-11-27 15:34:51
+-0.211398 0.0328202 544.437
+0.0171164 0.272544 -255.441
+-1.69345e-05 0.000151236 1
