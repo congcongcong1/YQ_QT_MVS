@@ -1,0 +1,5 @@
+✅ 转换成功: ./PyFiles\example_correct.py -> PythonC\pyc_example_correct.c
+✅ 转换成功: ./PyFiles\test_rich_features.py -> PythonC\pyc_test_rich_features.c
+✅ 转换成功: ./PyFiles\test_success_extended.py -> PythonC\pyc_test_success_extended.c
+
+汇总: 成功 3 个, 失败 0 个
