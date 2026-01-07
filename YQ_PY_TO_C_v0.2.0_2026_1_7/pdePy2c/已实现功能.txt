@@ -1,0 +1,61 @@
+[核心特性]
+1. 类型推断系统
+   - 基础类型：自动推断 int, double, bool, char*
+   - 特殊类型：识别 uint32_t 溢出模式（如 LCG 算法）
+   - 进制常量：0x... / 0o... 且值 <= 0xFFFF 时推断为 uint16_t
+   - 混合运算：int 与 double 运算自动提升为 double
+   - 作用域感知：函数内根据赋值自动更新变量类型记录
+
+2. 变量与作用域管理（对齐 Python 语义）
+   - 局部优先：函数内赋值默认创建局部变量，遮蔽同名全局变量
+   - global 支持：支持 global 关键字显式修改全局变量
+   - 参数重命名：自动检测参数与全局变量重名，生成 _arg_ 前缀
+
+3. 数组/列表增强
+   - 静态数组：全局/局部 list[int] 字面量 -> C 数组初始化
+   - 长度自动管理：
+     * 自动生成 <arr>_len 变量
+     * len(arr) -> 编译期替换为长度变量
+   - 隐式参数传递：
+     * 函数定义自动追加长度形参（int *arr -> int *arr, int n）
+     * 调用自动补全长度实参（call(arr) -> call(arr, arr_len)）
+   - 安全性：禁止 return 局部数组（防止悬垂指针）
+
+4. 控制流
+   - If/Elif/Else：完整支持
+   - For 循环：支持 range(stop), range(start, stop), range(start, stop, step)
+   - 负步长支持：自动识别 range(..., -1) 生成正确比较
+   - While 循环：支持 break / continue
+
+5. 函数系统
+   - 自动原型：生成 C 函数前置声明，解决调用顺序问题
+   - Main 隔离：def main() 自动重命名为 user_main()
+   - 返回值推断：基于 return 语句推断返回类型（int/void/double）
+
+6. IO 与字符串
+   - 智能 Print：
+     * 自动格式化：根据类型匹配 %d, %2f, %s
+     * 数组打印：print(arr) 自动展开为 for 循环打印内容
+     * 字符串转义：处理引号和反斜杠
+   - 字符串常量：支持基础字符串传递
+
+7. 运算符
+   - 算术：+, -, *, /, %
+   - 位运算：&, |, ^, <<, >>, ~
+   - 整除：// (FloorDiv) 映射为 floor() 实现 Python 语义
+   - 比较：==, !=, <, <=, >, >=
+   - 逻辑：and (&&), or (||), not (!)
+
+[更新内容（已实现）]
+1. 2D list[int] -> 平铺数组，自动生成 arr_h/arr_w，支持 arr[y][x] 与 width(arr)
+   - 提示：可用 len(arr[0]) 获取 2D 宽度（仅限 2D 数组）
+2. struct 映射：简易 class/namedtuple 映射为 C struct，支持字段访问与赋值
+3. 字符串拼接：为单片机安全起见，禁用 str + str
+4. 硬件寄存器访问：支持 machine.mem32[addr] 读写，生成 MEM32(addr)
+5. STM32 兼容增强：支持 byref(x) -> &x；@extern 跳过函数体；全大写常量默认外部宏
+   - 提示：请在 Python 文件开头定义 byref/extern 和 @extern 装饰器（见 PyFiles/LED.py）
+
+[下一步计划]
+1. 多维数组：目前以 int* 为核心，仅支持一维；未来可考虑 2D 扩展/多级指针
+2. 结构体扩展：复杂数据结构的自动映射与更强类型推断
+3. 字符串操作：如有需求，引入简易 string buffer 机制
