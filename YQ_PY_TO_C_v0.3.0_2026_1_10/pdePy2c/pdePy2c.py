@@ -1803,6 +1803,22 @@ class CCodeGenerator(ast.NodeVisitor):
         self.emit(f"{target} {op}= {val};")
 
     def visit_If(self, node: ast.If):
+        # --- Handle if __name__ == "__main__": unwrap ---
+        is_main_block = False
+        if isinstance(node.test, ast.Compare):
+            left = node.test.left
+            if isinstance(left, ast.Name) and left.id == "__name__":
+                if len(node.test.ops) == 1 and isinstance(node.test.ops[0], ast.Eq):
+                    right = node.test.comparators[0]
+                    if isinstance(right, ast.Constant) and right.value == "__main__":
+                        is_main_block = True
+                        
+        if is_main_block:
+            # Directly visit body statements instead of emitting a C if structure
+            for s in node.body:
+                self.visit(s)
+            return
+
         cond = self.visit(node.test)
         self.emit(f"if ({cond}) {{")
         self.indent()
