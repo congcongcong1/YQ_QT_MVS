@@ -7,12 +7,6 @@ import py_compile
 import traceback
 from typing import Dict, List, Optional, Tuple, Set
 
-# pdePy2c_impl_fixed2.py
-# Project-level notes:
-# - This transpiler targets a restricted Python subset and emits C code.
-# - Core features: list->array + length vars, print formatting, and basic control flow.
-# - Type inference is lightweight and tuned for this subset (int/double/bool/uint32_t).
-# - Keep changes minimal and avoid altering semantics of supported Python code.
 
 BINOP_MAP = {
     ast.Add: "+",
@@ -71,13 +65,29 @@ MATH_CONST_MAP = {
 }
 
 class TranslateError(Exception):
+    """Custom exception for Python-to-C transpilation errors.
+    
+    Captures error messages along with source location information (line number
+    and column offset) from the AST node where the error occurred.
+    """
     def __init__(self, message: str, node: ast.AST = None):
+        """Initialize a transpilation error with message and optional AST node.
+        
+        Args:
+            message: Human-readable error description
+            node: Optional AST node where the error occurred (for location tracking)
+        """
         super().__init__(message)
         self.message = message
         self.lineno = getattr(node, 'lineno', None) if node else None
         self.col_offset = getattr(node, 'col_offset', None) if node else None
     
     def __str__(self):
+        """Format error message with line number if available.
+        
+        Returns:
+            Error message string, optionally including line number
+        """
         if self.lineno:
             return f"{self.message} (行 {self.lineno})"
         return self.message
@@ -108,7 +118,23 @@ def _force_write_text(path: str, text: str, encoding: str = "utf-8") -> None:
             fp.write(text)
 
 class CCodeGenerator(ast.NodeVisitor):
+    """Python-to-C transpiler that converts a restricted Python subset to C code.
+    
+    This transpiler handles:
+    - Basic data types: int, double, bool, char*, uint32_t, uint16_t
+    - Arrays (1D and 2D) with automatic length tracking
+    - Functions with type inference
+    - Control flow: if/else, for, while, break, continue
+    - Structs (from Python classes)
+    - Math operations and standard library functions
+    """
     def __init__(self, filename: str, source_text: str | None = None):
+        """Initialize the C code generator.
+        
+        Args:
+            filename: Path to the Python source file being transpiled
+            source_text: Optional source code text (if None, reads from filename)
+        """
         self.filename = filename
         if source_text is None:
             try:
@@ -179,6 +205,14 @@ class CCodeGenerator(ast.NodeVisitor):
         self.external_struct_names: Set[str] = set()
 
     def _is_external_macro_name(self, name: str) -> bool:
+        """Check if a name should be treated as an external macro/constant.
+        
+        Args:
+            name: Variable or constant name to check
+            
+        Returns:
+            True if the name matches external macro prefixes (e.g., GPIO_, RCC_)
+        """
         if not name:
             return False
         # 不再盲目将所有全大写名字视为外部宏
@@ -186,6 +220,14 @@ class CCodeGenerator(ast.NodeVisitor):
         return any(name.startswith(p) for p in self.external_macro_prefixes)
 
     def _get_source_segment(self, node: ast.AST) -> str | None:
+        """Extract the original source code text for an AST node.
+        
+        Args:
+            node: AST node to extract source for
+            
+        Returns:
+            Source code string, or None if unavailable
+        """
         if not self.source_text:
             return None
         try:
@@ -194,6 +236,16 @@ class CCodeGenerator(ast.NodeVisitor):
             return None
 
     def _normalize_int_literal(self, text: str) -> str:
+        """Normalize integer literal text by removing parentheses and underscores.
+        
+        Converts Python octal literals (0o...) to C format (0...).
+        
+        Args:
+            text: Raw integer literal string from source
+            
+        Returns:
+            Normalized integer literal suitable for C code
+        """
         s = text.strip()
         while s.startswith("(") and s.endswith(")") and len(s) > 2:
             s = s[1:-1].strip()
@@ -203,9 +255,25 @@ class CCodeGenerator(ast.NodeVisitor):
         return s
 
     def _normalize_hex_literal(self, text: str) -> str:
+        """Normalize hexadecimal literal text.
+        
+        Args:
+            text: Raw hex literal string from source
+            
+        Returns:
+            Normalized hex literal suitable for C code
+        """
         return self._normalize_int_literal(text)
 
     def _is_hex_literal(self, node: ast.AST) -> bool:
+        """Check if an AST node represents a hexadecimal literal.
+        
+        Args:
+            node: AST node to check
+            
+        Returns:
+            True if the node is a hex literal (e.g., 0x1234)
+        """
         if not isinstance(node, ast.Constant) or not isinstance(node.value, int):
             return False
         segment = self._get_source_segment(node)
@@ -215,6 +283,14 @@ class CCodeGenerator(ast.NodeVisitor):
         return s.lower().startswith("0x")
 
     def _is_octal_literal(self, node: ast.AST) -> bool:
+        """Check if an AST node represents an octal literal.
+        
+        Args:
+            node: AST node to check
+            
+        Returns:
+            True if the node is an octal literal (e.g., 0o755)
+        """
         if not isinstance(node, ast.Constant) or not isinstance(node.value, int):
             return False
         segment = self._get_source_segment(node)
@@ -227,6 +303,16 @@ class CCodeGenerator(ast.NodeVisitor):
         return s.lower().startswith("0o")
 
     def _is_uint16_literal(self, node: ast.AST) -> bool:
+        """Check if an AST node represents a uint16_t literal.
+        
+        A literal is considered uint16_t if it's a hex or octal value <= 0xFFFF.
+        
+        Args:
+            node: AST node to check
+            
+        Returns:
+            True if the node should be typed as uint16_t
+        """
         if not isinstance(node, ast.Constant) or not isinstance(node.value, int):
             return False
         if node.value > 0xFFFF:
@@ -283,6 +369,18 @@ class CCodeGenerator(ast.NodeVisitor):
         return False
 
     def _parse_2d_list_literal(self, node: ast.List) -> Tuple[int, int, List[str], str] | None:
+        """Parse a 2D list literal into flattened C array representation.
+        
+        Args:
+            node: AST List node potentially containing nested lists
+            
+        Returns:
+            Tuple of (rows, cols, flat_values, element_type) if 2D list, None otherwise
+            - rows: Number of rows
+            - cols: Number of columns (must be uniform across rows)
+            - flat_values: Flattened list of C code strings for each element
+            - element_type: Inferred C type ('int' or 'double')
+        """
         if not node.elts:
             return None
         if not all(isinstance(e, ast.List) for e in node.elts):
@@ -317,6 +415,19 @@ class CCodeGenerator(ast.NodeVisitor):
         return rows, cols, flat, elem_type
 
     def _parse_class_struct(self, node: ast.ClassDef) -> List[str]:
+        """Extract struct field names from a Python class definition.
+        
+        Analyzes the __init__ method to find all self.field assignments.
+        
+        Args:
+            node: ClassDef AST node
+            
+        Returns:
+            List of field names found in __init__
+            
+        Raises:
+            TranslateError: If class has no __init__ or no field assignments
+        """
         init_fn: ast.FunctionDef | None = None
         for s in node.body:
             if isinstance(s, ast.FunctionDef) and s.name == "__init__":
@@ -336,6 +447,21 @@ class CCodeGenerator(ast.NodeVisitor):
         return fields
 
     def _parse_namedtuple_def(self, node: ast.Assign) -> Tuple[str, List[str]] | None:
+        """Parse a namedtuple definition into struct-compatible format.
+        
+        Recognizes patterns like:
+            Point = namedtuple('Point', ['x', 'y'])
+            Point = namedtuple('Point', 'x y')
+        
+        Args:
+            node: Assignment AST node potentially defining a namedtuple
+            
+        Returns:
+            Tuple of (typename, field_list) if valid namedtuple, None otherwise
+            
+        Raises:
+            TranslateError: If namedtuple syntax is invalid
+        """
         if len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
             return None
         if not isinstance(node.value, ast.Call):
@@ -439,9 +565,19 @@ class CCodeGenerator(ast.NodeVisitor):
     # ----- scope helpers -----
     @property
     def vars(self) -> Set[str]:
+        """Get the set of declared variables in the current scope.
+        
+        Returns:
+            Set of variable names declared in the innermost scope
+        """
         return self.vars_stack[-1]
 
     def push_scope(self):
+        """Enter a new scope (function body, loop, etc.).
+        
+        Creates new scope frames for variables, types, array metadata, and parameters.
+        Child scopes inherit parent scope's type and array information.
+        """
         self.vars_stack.append(set())
         self.len_stack.append(dict(self.len_stack[-1]))
         self.width_stack.append(dict(self.width_stack[-1]))
@@ -454,6 +590,10 @@ class CCodeGenerator(ast.NodeVisitor):
         self.in_wrapper_stack.append(False)
 
     def pop_scope(self):
+        """Exit the current scope and return to the parent scope.
+        
+        Discards all scope-specific tracking information for the exited scope.
+        """
         self.vars_stack.pop()
         self.len_stack.pop()
         self.width_stack.pop()
@@ -466,6 +606,18 @@ class CCodeGenerator(ast.NodeVisitor):
         self.in_wrapper_stack.pop()
 
     def _merge_types(self, cur: str | None, new: str) -> str:
+        """Merge two C type names, preferring the more general type.
+        
+        Type precedence (most to least general):
+        int_arr2d > int_arr > double > uint32_t > uint16_t > int
+        
+        Args:
+            cur: Current type (or None)
+            new: New type to merge
+            
+        Returns:
+            The merged type that can represent both inputs
+        """
         if not cur:
             return new
         if cur == new:
@@ -483,26 +635,75 @@ class CCodeGenerator(ast.NodeVisitor):
         return cur
 
     def _decl_type(self, c_type: str) -> str:
+        """Convert internal type representation to C declaration type.
+        
+        Args:
+            c_type: Internal type name (e.g., 'int_arr', 'int_arr2d', 'int')
+            
+        Returns:
+            C declaration type (e.g., 'int *' for arrays, 'int' for scalars)
+        """
         if c_type in ("int_arr", "int_arr2d"):
             return "int *"
         return c_type
 
     def set_len_name(self, var: str, len_var: str):
+        """Associate an array variable with its length variable name.
+        
+        Args:
+            var: Array variable name
+            len_var: Name of the variable holding the array's length
+        """
         self.len_stack[-1][var] = len_var
 
     def get_len_name(self, var: str) -> Optional[str]:
+        """Retrieve the length variable name for an array.
+        
+        Args:
+            var: Array variable name
+            
+        Returns:
+            Length variable name, or None if not an array
+        """
         return self.len_stack[-1].get(var)
     
     def set_width_name(self, var: str, width_var: str):
+        """Associate a 2D array variable with its width variable name.
+        
+        Args:
+            var: 2D array variable name
+            width_var: Name of the variable holding the array's width (columns)
+        """
         self.width_stack[-1][var] = width_var
 
     def get_width_name(self, var: str) -> Optional[str]:
+        """Retrieve the width variable name for a 2D array.
+        
+        Args:
+            var: 2D array variable name
+            
+        Returns:
+            Width variable name, or None if not a 2D array
+        """
         return self.width_stack[-1].get(var)
 
     def mark_array2d(self, var: str):
+        """Mark a variable as a 2D array.
+        
+        Args:
+            var: Variable name to mark as 2D array
+        """
         self.array2d_stack[-1].add(var)
 
     def is_array2d(self, var: str) -> bool:
+        """Check if a variable is marked as a 2D array.
+        
+        Args:
+            var: Variable name to check
+            
+        Returns:
+            True if variable is a 2D array
+        """
         return any(var in scope for scope in reversed(self.array2d_stack))
 
     def fresh_var(self, base: str) -> str:
@@ -515,11 +716,32 @@ class CCodeGenerator(ast.NodeVisitor):
         return name
     
     def get_renamed_param(self, param_name: str) -> str:
-        """获取参数的重映射名称，若无重映射则返回原名"""
+        """Get the C-renamed parameter name, handling global variable shadowing.
+        
+        Args:
+            param_name: Original Python parameter name
+            
+        Returns:
+            Renamed C parameter name, or original name if no renaming needed
+        """"
         return self.param_rename_stack[-1].get(param_name, param_name)
     
     def _get_expr_type(self, node: ast.AST) -> str:
-        """递归判断 Python 表达式在 C 中对应的类型。"""
+        """Recursively infer the C type of a Python expression.
+        
+        Analyzes AST nodes to determine appropriate C types:
+        - Constants: int, double, char*, bool based on Python type
+        - Variables: Lookup from type_stack
+        - Lists: int_arr or int_arr2d with element type
+        - BinOp: Type promotion rules (e.g., int + double -> double)
+        - Calls: Return type from function registry or built-ins
+        
+        Args:
+            node: AST expression node to analyze
+            
+        Returns:
+            C type string (e.g., 'int', 'double', 'char *', 'int_arr', 'uint32_t')
+        """"
         if isinstance(node, ast.Constant):
             val = node.value
             if isinstance(val, float): 
@@ -636,6 +858,19 @@ class CCodeGenerator(ast.NodeVisitor):
         return "int"
 
     def _get_c_type_from_annotation(self, ann: ast.AST | None) -> str:
+        """Convert Python type annotation to C type string.
+        
+        Supports:
+        - Basic types: int, float/double, bool, str -> char*
+        - Sized integers: uint32_t, uint16_t, int64_t
+        - Lists: List[int] -> int*, List[float] -> double*
+        
+        Args:
+            ann: Type annotation AST node (or None)
+            
+        Returns:
+            C type string, defaults to 'int' if annotation is None or unrecognized
+        """
         if ann is None:
             return "int"
         if isinstance(ann, ast.Name):
@@ -662,6 +897,18 @@ class CCodeGenerator(ast.NodeVisitor):
         return "int"
 
     def _infer_struct_param_type(self, fn: ast.FunctionDef, param_name: str) -> str | None:
+        """Infer if a function parameter should be a struct type.
+        
+        Analyzes attribute accesses (param.field) within the function body
+        to determine if the parameter matches a known struct definition.
+        
+        Args:
+            fn: Function definition to analyze
+            param_name: Parameter name to check
+            
+        Returns:
+            Struct type name if uniquely determined, None otherwise
+        """
         if not self.struct_defs:
             return None
         field_hits: List[str] = []
@@ -704,6 +951,17 @@ class CCodeGenerator(ast.NodeVisitor):
         return fmt, val_str, is_arr
         
     def emit_print_call(self, node: ast.Call):
+        """Generate C printf code for a Python print() call.
+        
+        Handles:
+        - Empty print() -> printf("\n")
+        - print(prefix, value) -> formatted output with type-specific format specifiers
+        - print(arr) -> loop-based array printing (1D and 2D)
+        - Multiple arguments -> space-separated output
+        
+        Args:
+            node: Call AST node representing print(...)
+        """
         args = list(node.args)
 
         if len(args) == 0:
@@ -817,10 +1075,23 @@ class CCodeGenerator(ast.NodeVisitor):
                 else:
                     self.emit(f'printf("{fmt}", {val_str});')
     def emit(self, line: str):
+        """Emit a line of C code with proper indentation.
+        
+        Args:
+            line: C code line to emit (without indentation prefix)
+        """
         indent = self.indent_with * self.indent_level
         self.code.append(f"{indent}{line}")
 
     def _escape_c_string(self, s: str) -> str:
+        """Escape a Python string for use in C string literals.
+        
+        Args:
+            s: Python string to escape
+            
+        Returns:
+            C-escaped string (e.g., \n, \t, \\ handled)
+        """
         return (s.replace("\\", "\\\\")
                  .replace('"', '\\"')
                  .replace("\n", "\\n")
@@ -828,13 +1099,30 @@ class CCodeGenerator(ast.NodeVisitor):
                  .replace("\t", "\\t"))
 
     def indent(self):
+        """Increase indentation level for subsequent emitted lines."""
         self.indent_level += 1
 
     def dedent(self):
+        """Decrease indentation level for subsequent emitted lines."""
         self.indent_level -= 1
 
     # ----- entry -----
     def generate(self, tree: ast.AST) -> str:
+        """Generate C code from a Python AST.
+        
+        Main entry point for transpilation. Processes the AST to:
+        1. Extract #include directives from source comments
+        2. Emit standard C headers (stdio.h, stdint.h, etc.)
+        3. Visit all AST nodes to generate function and struct definitions
+        4. Create a wrapper procedure for top-level statements
+        5. Generate main() function that calls the wrapper
+        
+        Args:
+            tree: Root AST node (typically ast.Module)
+            
+        Returns:
+            Complete C source code as a string
+        """
         include_lines: List[str] = []
         try:
             source = self.source_text
@@ -2239,9 +2527,27 @@ class CCodeGenerator(ast.NodeVisitor):
         return str(node.value)
 
     def generic_visit(self, node):
+        """Handle unsupported AST nodes by raising an error.
+        
+        Args:
+            node: Unsupported AST node
+            
+        Raises:
+            TranslateError: Always raised for unsupported syntax
+        """
         raise TranslateError(f"不支持的语法节点: {type(node).__name__}（{self.filename}:{getattr(node,'lineno','?')}）")
 
 def collect_pyfiles(paths: List[str]) -> List[str]:
+    """Collect all Python files from given paths (files or directories).
+    
+    Recursively walks directories to find .py files.
+    
+    Args:
+        paths: List of file paths or directory paths
+        
+    Returns:
+        Sorted list of unique .py file paths
+    """
     files: List[str] = []
     for p in paths:
         if os.path.isdir(p):
@@ -2254,6 +2560,16 @@ def collect_pyfiles(paths: List[str]) -> List[str]:
     return sorted(set(files))
 
 def syntax_check(pyfiles: List[str], out_path: str) -> List[str]:
+    """Check Python syntax for all files and write results to output file.
+    
+    Uses py_compile to validate Python syntax before transpilation.
+    
+    Args:\n        pyfiles: List of Python file paths to check
+        out_path: Path to write syntax check results
+        
+    Returns:
+        List of files that passed syntax check
+    """
     ok: List[str] = []
     bad: List[str] = []
     lines: List[str] = []
@@ -2276,6 +2592,19 @@ def syntax_check(pyfiles: List[str], out_path: str) -> List[str]:
     return ok
 
 def translate_files(pyfiles: List[str], out_dir: str, out_path: str) -> None:
+    """Transpile Python files to C and write results to output directory.
+    
+    For each Python file:
+    1. Parse the Python source into an AST
+    2. Generate C code using CCodeGenerator
+    3. Write C code to output directory with pyc_ prefix
+    4. Log success/failure with detailed error information
+    
+    Args:
+        pyfiles: List of Python file paths to transpile
+        out_dir: Directory to write generated C files
+        out_path: Path to write transpilation results log
+    """
     import traceback
     os.makedirs(out_dir, exist_ok=True)
     ok = 0
@@ -2341,6 +2670,15 @@ def translate_files(pyfiles: List[str], out_dir: str, out_path: str) -> None:
     _force_write_text(out_path, "\n".join(lines))
 
 def main():
+    """Main entry point for the pdePy2c transpiler command-line tool.
+    
+    Workflow:
+    1. Parse command-line arguments for input Python files/directories
+    2. Collect all .py files from specified paths
+    3. Run syntax check on collected files
+    4. Transpile syntax-valid files to C code
+    5. Write results to result_1.txt (syntax check) and result_2.txt (transpilation)
+    """
     parser = argparse.ArgumentParser(description="Translate Python subset to C (enhanced list->array & len handling)")
     parser.add_argument("pyfiles", nargs="*", default=["./PyFiles"], help="Python files/directories (default: ./PyFiles)")
     args = parser.parse_args()
